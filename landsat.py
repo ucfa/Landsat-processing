@@ -99,6 +99,10 @@ def iterate_landsat():
         }    
     return bands
 
+in_band3 = bands['red']
+in_band2 = bands['green']
+in_band1 = bands['blue']
+
 def create_comp(in_band3, in_band2, in_band1):
     '''
     Creation of TC image from RGB bands (3).
@@ -129,7 +133,8 @@ def create_comp(in_band3, in_band2, in_band1):
     return bytescale(img_rescale)
 
 # Cloud masking functionality.
-
+in_band = bytescale
+cloud_band = bands['cloud']
 def auto_cmask(in_band, cloud_band):
     '''
     Automatic computation of an LS8 cloud band.
