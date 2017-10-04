@@ -7,11 +7,14 @@
 # http://www2.geog.ucl.ac.uk/~plewis/geogg122/Chapter5_Interpolation/python/smoothn.py
 # and ensure they are in the same directory as this code.
 
+# For simplicity, I'm including the two functions in with this commit.
+
 # Copyright (for whatever that's worth) Benjamin Allen, 2017.
 # MIT License.
 
 import numpy as np
 import gdal
+import glob
 from raster_mask import *
 from smoothn import *
 
@@ -67,18 +70,21 @@ def auto_rmask(input_in, shape_in):
     # Return the appended array, but convert back to 2D
     array2 = array[0]
     return array2
-
+## iterate_landsat is CURRENTLY WIP because I'm lazy.
 def iterate_landsat():
     new_array = []
     for n in xrange (1,12):
         try:
-            a = './LC08_L1TP_203023_20160504_20170325_01_T1_B%d.TIF' %(n)
-        
-            # auto_rmask already opens using gdal.
-        
-            new_array.append(auto_rmask(a,shape_in))
+            # Ensure you have imagery that is consistent with USGS's new 45 length standard.
+            #a = './LC08_L1TP_203023_20160504_20170325_01_T1_B%d.TIF' %(n)
+            # I want to glob the filename, to select whatever tiles the user has downloaded.
+            # I then want to pass this through the moduolo function to select the B* intergers from 1 to 12.
+            a = glob.glob('./LC*')
+            b = (a[42:43], %d) %(n) 
+            new_array.append(auto_rmask(b,shape_in))
         except:
             pass
+    # because the bands in LS8 images wont change, this is a handy dictionary.    
     bands = {'coast':new_array[0],\
          'blue': new_array[1],\
          'green': new_array[2],\
@@ -103,7 +109,7 @@ def create_comp(in_band3, in_band2, in_band1):
     which outputs:
     1. RGB true colour image.
     
-    Adapted from Stack Overflow.
+    Adapted from Stack Overflow code.
     '''
     from scipy.misc import bytescale
     from skimage import exposure
